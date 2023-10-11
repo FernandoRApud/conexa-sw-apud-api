@@ -3,7 +3,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import logger from 'morgan';
 import router from './src/routes';
-import { PORT } from './src/config';
+import { PORT } from './src/constants';
 
 const app = express();
 

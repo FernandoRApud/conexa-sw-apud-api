@@ -45,5 +45,7 @@ module.exports = {
     'no-use-before-define': 'off',
     'no-param-reassign': [2, { props: false }],
     '@typescript-eslint/naming-convention': 'off',
+    'no-multi-assign': [0],
+    'import/no-extraneous-dependencies': [0],
   },
 };

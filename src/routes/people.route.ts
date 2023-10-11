@@ -7,11 +7,12 @@ import {
   getPeopleByIdAndBatchSpecies,
   getPeopleByIdAndBatchStarships,
   getPeopleByIdAndBatchVehicles,
+  getPeoples,
 } from '../controllers/people.controller';
 
 const router = Router();
 
-// router.get('/', getPeoples);
+router.get('/', getPeoples);
 router.get('/:id', getPeopleById);
 router.get('/:id/batched', getPeopleByIdAndBatch);
 router.get('/:id/batched/homeworld', getPeopleByIdAndBatchHomeworld);

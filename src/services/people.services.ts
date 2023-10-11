@@ -4,6 +4,11 @@ import {
 import { IPeople } from '../interfaces/IPeople';
 import { clientAxios, passthroughFetchBatch } from '../utils/axios.utility';
 
+export const getAllPeoples = async () => {
+  const people = await clientAxios.get(`${ROUTES.PEOPLE}`);
+  return people.data;
+};
+
 export const getPeople = async (id: string) => {
   const people = await clientAxios.get(`${ROUTES.PEOPLE}/${id}`);
   return people.data;

@@ -1,14 +1,21 @@
 import { Request, Response } from 'express';
 import {
-  batchFilms, batchHomeworld, batchSpecies, batchStarships, batchVehicles, getPeople,
+  batchFilms, batchHomeworld, batchSpecies, batchStarships, batchVehicles, getAllPeoples, getPeople,
 } from '../services/people.services';
 import { handleAppError } from '../utils/error.utility';
 
+export const getPeoples = async (_req: Request, res: Response) => {
+  try {
+    const people = await getAllPeoples();
+    return res.status(200).json(people);
+  } catch (error: unknown) {
+    return handleAppError(res, error);
+  }
+};
 export const getPeopleById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const people = await getPeople(id);
-    console.log(people);
     return res.status(200).json(people);
   } catch (error: unknown) {
     return handleAppError(res, error);

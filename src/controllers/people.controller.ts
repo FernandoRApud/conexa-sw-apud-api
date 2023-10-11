@@ -4,9 +4,10 @@ import {
 } from '../services/people.services';
 import { handleAppError } from '../utils/error.utility';
 
-export const getPeoples = async (_req: Request, res: Response) => {
+export const getPeoples = async (req: Request, res: Response) => {
   try {
-    const people = await getAllPeoples();
+    const { search } = req.query as { search: string };
+    const people = search ? await getAllPeoples(search) : await getAllPeoples();
     return res.status(200).json(people);
   } catch (error: unknown) {
     return handleAppError(res, error);

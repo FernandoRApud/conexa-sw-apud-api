@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 import {
-  batchCharacters,
-  batchPlanets, batchSpecies, batchStarships, batchVehicles, getAllFilms, getFilm,
+  batchCharacters, batchPlanets, batchSpecies, batchStarships, batchVehicles, getAllFilms, getFilm,
 } from '../services/films.services';
 import { handleAppError } from '../utils/error.utility';
 
-export const getFilms = async (_req: Request, res: Response) => {
+export const getFilms = async (req: Request, res: Response) => {
   try {
-    const films = await getAllFilms();
+    const { search } = req.query as { search: string };
+    const films = search ? await getAllFilms(search) : await getAllFilms();
     return res.status(200).json(films);
   } catch (error: unknown) {
     return handleAppError(res, error);

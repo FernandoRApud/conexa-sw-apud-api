@@ -16,6 +16,7 @@ const STARSHIPS_INDEX = 'starships';
 const PLANETS_INDEX = 'planets';
 const CHARACTERS_INDEX = 'characters';
 const RESIDENTS_INDEX = 'residents';
+const PEOPLE_INDEX = 'people';
 const CACHE_DURATION_SECONDS = 60 * 30;
 
 export {
@@ -30,5 +31,6 @@ export {
   PLANETS_INDEX,
   CHARACTERS_INDEX,
   RESIDENTS_INDEX,
+  PEOPLE_INDEX,
   CACHE_DURATION_SECONDS,
 };

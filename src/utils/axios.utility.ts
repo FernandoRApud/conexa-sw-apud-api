@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { FetchedData } from '../interfaces';
+import { IFetchedData } from '../interfaces';
 import AppError from './error.utility';
 
 const defaultOptions = {
@@ -20,14 +20,21 @@ const fetchFilmsInBatch = async (filmUrls: string[]) => {
   }
 };
 
-export const passthroughFetchBatch = async <K extends keyof FetchedData>(
-  fetchedData: FetchedData,
+export const passthroughFetchBatch = async <K extends keyof IFetchedData>(
+  fetchedData: IFetchedData,
   subIndex: K,
 ) => {
   const propertyValue = fetchedData[subIndex];
 
   if (Array.isArray(propertyValue)) {
     const filmsData = await fetchFilmsInBatch(propertyValue);
-    console.log(filmsData);
-  } else throw new AppError('Wrong data type');
+    const newAssignedData = fetchedData[subIndex] = filmsData;
+    return newAssignedData;
+  }
+  if (typeof propertyValue === 'string') {
+    const response = await axios.get(propertyValue);
+    const newAssignedData = fetchedData[subIndex] = response.data;
+    return newAssignedData;
+  }
+  throw new AppError('Wrong data type');
 };

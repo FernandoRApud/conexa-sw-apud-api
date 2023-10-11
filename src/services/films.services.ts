@@ -1,18 +1,17 @@
 import {
-  CHARACTERS_INDEX,
-  PLANETS_INDEX, ROUTES, SPECIES_INDEX, STARSHIPS_INDEX, VEHICLES_INDEX,
+  CHARACTERS_INDEX, PLANETS_INDEX, ROUTES, SPECIES_INDEX, STARSHIPS_INDEX, VEHICLES_INDEX,
 } from '../constants';
 import { IPeople } from '../interfaces/IPeople';
 import { clientAxios, passthroughFetchBatch } from '../utils/axios.utility';
 
 export const getAllFilms = async (search?: string) => {
-  const people = search ? await clientAxios.get(`${ROUTES.FILMS}?search=${search}`) : await clientAxios.get(`${ROUTES.FILMS}`);
-  return people.data;
+  const film = search ? await clientAxios.get(`${ROUTES.FILMS}?search=${search}`) : await clientAxios.get(`${ROUTES.FILMS}`);
+  return film.data;
 };
 
 export const getFilm = async (id: string) => {
-  const people = await clientAxios.get(`${ROUTES.FILMS}/${id}`);
-  return people.data;
+  const film = await clientAxios.get(`${ROUTES.FILMS}/${id}`);
+  return film.data;
 };
 
 export const batchCharacters = async (filmData: IPeople) => {

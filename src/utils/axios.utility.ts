@@ -1,6 +1,6 @@
 import axios from 'axios';
 import NodeCache from 'node-cache';
-import { IFetchedData } from '../interfaces';
+import { IFetchedDataExtended } from '../interfaces';
 import AppError from './error.utility';
 import { CACHE_DURATION_SECONDS } from '../constants';
 
@@ -24,8 +24,8 @@ const fetchFilmsInBatch = async (filmUrls: string[]) => {
   }
 };
 
-export const passthroughFetchBatch = async <K extends keyof IFetchedData>(
-  fetchedData: IFetchedData,
+export const passthroughFetchBatch = async <K extends keyof IFetchedDataExtended>(
+  fetchedData: IFetchedDataExtended,
   subIndex: K,
 ) => {
   const cacheKey = `${subIndex}:${fetchedData[subIndex]}`;

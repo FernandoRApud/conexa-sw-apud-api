@@ -13,7 +13,7 @@ const FILMS_INDEX = 'films';
 const SPECIES_INDEX = 'species';
 const VEHICLES_INDEX = 'vehicles';
 const STARSHIPS_INDEX = 'starships';
-const CACHE_DURATION_SECONDS = 60;
+const CACHE_DURATION_SECONDS = 60 * 30;
 
 export {
   DB_MONGO,

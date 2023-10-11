@@ -1,7 +1,7 @@
 import {
   FILMS_INDEX, HOMEWORLD_INDEX, ROUTES, SPECIES_INDEX, STARSHIPS_INDEX, VEHICLES_INDEX,
 } from '../constants';
-import { IPeople } from '../interfaces';
+import { IPeople } from '../interfaces/IPeople';
 import { clientAxios, passthroughFetchBatch } from '../utils/axios.utility';
 
 export const getPeople = async (id: string) => {

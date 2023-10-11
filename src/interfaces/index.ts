@@ -16,3 +16,12 @@ export type IAppError = Error & {
   code: number,
   message: string
 };
+
+export type IRequestError = Error & {
+  response?: {
+    status: number,
+    data: {
+      detail: string
+    }
+  }
+};

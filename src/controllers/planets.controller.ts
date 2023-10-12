@@ -1,14 +1,29 @@
 import { Request, Response } from 'express';
-import { handleAppError } from '../utils/error.utility';
+import AppError, { handleAppError } from '../utils/error.utility';
 import {
-  batchFilms, batchResidents, getAllPlanets, getPlanet,
+  batchFilms, batchResidents, getAllPlanets, getPlanet, getPlanetsByPage, getPlanetsBySearch, getPlanetsBySearchAndPage,
 } from '../services/planets.services';
 
 export const getPlanets = async (req: Request, res: Response) => {
   try {
-    const { search } = req.query as { search: string };
-    const planets = search ? await getAllPlanets(search) : await getAllPlanets();
-    return res.status(200).json(planets);
+    const { search, page } = req.query as { search: string, page: string };
+    if (search && page) {
+      const planets = await getPlanetsBySearchAndPage(search, page);
+      return res.status(200).json(planets);
+    }
+    if (search) {
+      const planets = await getPlanetsBySearch(search);
+      return res.status(200).json(planets);
+    }
+    if (page) {
+      const planets = await getPlanetsByPage(page);
+      return res.status(200).json(planets);
+    }
+    if (!search && !page) {
+      const planets = await getAllPlanets();
+      return res.status(200).json(planets);
+    }
+    throw new AppError('Invalid route');
   } catch (error: unknown) {
     return handleAppError(res, error);
   }

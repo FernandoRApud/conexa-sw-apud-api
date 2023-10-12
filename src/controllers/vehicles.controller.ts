@@ -1,14 +1,29 @@
 import { Request, Response } from 'express';
-import { handleAppError } from '../utils/error.utility';
+import AppError, { handleAppError } from '../utils/error.utility';
 import {
-  batchFilms, batchPilots, getAllVehicles, getVehicle,
+  batchFilms, batchPilots, getAllVehicles, getVehicle, getVehiclesByPage, getVehiclesBySearch, getVehiclesBySearchAndPage,
 } from '../services/vehicles.services';
 
 export const getVehicles = async (req: Request, res: Response) => {
   try {
-    const { search } = req.query as { search: string };
-    const vehicle = search ? await getAllVehicles(search) : await getAllVehicles();
-    return res.status(200).json(vehicle);
+    const { search, page } = req.query as { search: string, page: string };
+    if (search && page) {
+      const vehicle = await getVehiclesBySearchAndPage(search, page);
+      return res.status(200).json(vehicle);
+    }
+    if (search) {
+      const vehicle = await getVehiclesBySearch(search);
+      return res.status(200).json(vehicle);
+    }
+    if (page) {
+      const vehicle = await getVehiclesByPage(page);
+      return res.status(200).json(vehicle);
+    }
+    if (!search && !page) {
+      const vehicle = await getAllVehicles();
+      return res.status(200).json(vehicle);
+    }
+    throw new AppError('Invalid route');
   } catch (error: unknown) {
     return handleAppError(res, error);
   }

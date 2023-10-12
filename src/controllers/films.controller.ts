@@ -1,14 +1,29 @@
 import { Request, Response } from 'express';
 import {
-  batchCharacters, batchPlanets, batchSpecies, batchStarships, batchVehicles, getAllFilms, getFilm,
+  batchCharacters, batchPlanets, batchSpecies, batchStarships, batchVehicles, getAllFilms, getFilm, getFilmsByPage, getFilmsBySearch, getFilmsBySearchAndPage,
 } from '../services/films.services';
-import { handleAppError } from '../utils/error.utility';
+import AppError, { handleAppError } from '../utils/error.utility';
 
 export const getFilms = async (req: Request, res: Response) => {
   try {
-    const { search } = req.query as { search: string };
-    const films = search ? await getAllFilms(search) : await getAllFilms();
-    return res.status(200).json(films);
+    const { search, page } = req.query as { search: string, page: string };
+    if (search && page) {
+      const films = await getFilmsBySearchAndPage(search, page);
+      return res.status(200).json(films);
+    }
+    if (search) {
+      const films = await getFilmsBySearch(search);
+      return res.status(200).json(films);
+    }
+    if (page) {
+      const films = await getFilmsByPage(page);
+      return res.status(200).json(films);
+    }
+    if (!search && !page) {
+      const films = await getAllFilms();
+      return res.status(200).json(films);
+    }
+    throw new AppError('Invalid route');
   } catch (error: unknown) {
     return handleAppError(res, error);
   }

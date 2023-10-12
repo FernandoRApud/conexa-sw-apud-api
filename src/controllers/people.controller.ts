@@ -1,14 +1,29 @@
 import { Request, Response } from 'express';
 import {
-  batchFilms, batchHomeworld, batchSpecies, batchStarships, batchVehicles, getAllPeoples, getPeople,
+  batchFilms, batchHomeworld, batchSpecies, batchStarships, batchVehicles, getAllPeoples, getPeople, getPeoplesByPage, getPeoplesBySearch, getPeoplesBySearchAndPage,
 } from '../services/people.services';
-import { handleAppError } from '../utils/error.utility';
+import AppError, { handleAppError } from '../utils/error.utility';
 
 export const getPeoples = async (req: Request, res: Response) => {
   try {
-    const { search } = req.query as { search: string };
-    const people = search ? await getAllPeoples(search) : await getAllPeoples();
-    return res.status(200).json(people);
+    const { search, page } = req.query as { search: string, page: string };
+    if (search && page) {
+      const people = await getPeoplesBySearchAndPage(search, page);
+      return res.status(200).json(people);
+    }
+    if (search) {
+      const people = await getPeoplesBySearch(search);
+      return res.status(200).json(people);
+    }
+    if (page) {
+      const people = await getPeoplesByPage(page);
+      return res.status(200).json(people);
+    }
+    if (!search && !page) {
+      const people = await getAllPeoples();
+      return res.status(200).json(people);
+    }
+    throw new AppError('Invalid route');
   } catch (error: unknown) {
     return handleAppError(res, error);
   }

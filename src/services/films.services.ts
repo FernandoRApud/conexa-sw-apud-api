@@ -4,8 +4,23 @@ import {
 import { IPeople } from '../interfaces/IPeople';
 import { clientAxios, passthroughFetchBatch } from '../utils/axios.utility';
 
-export const getAllFilms = async (search?: string) => {
-  const film = search ? await clientAxios.get(`${ROUTES.FILMS}?search=${search}`) : await clientAxios.get(`${ROUTES.FILMS}`);
+export const getAllFilms = async () => {
+  const film = await clientAxios.get(`${ROUTES.FILMS}`);
+  return film.data;
+};
+
+export const getFilmsByPage = async (page: string) => {
+  const film = await clientAxios.get(`${ROUTES.FILMS}?page=${page}`);
+  return film.data;
+};
+
+export const getFilmsBySearch = async (search: string) => {
+  const film = await clientAxios.get(`${ROUTES.FILMS}?search=${search}`);
+  return film.data;
+};
+
+export const getFilmsBySearchAndPage = async (search: string, page: string) => {
+  const film = await clientAxios.get(`${ROUTES.FILMS}?search=${search}&page=${page}`);
   return film.data;
 };
 

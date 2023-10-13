@@ -4,8 +4,23 @@ import {
 import { IPeople } from '../interfaces/IPeople';
 import { clientAxios, passthroughFetchBatch } from '../utils/axios.utility';
 
-export const getAllPeoples = async (search?: string) => {
-  const people = search ? await clientAxios.get(`${ROUTES.PEOPLE}?search=${search}`) : await clientAxios.get(`${ROUTES.PEOPLE}`);
+export const getAllPeoples = async () => {
+  const people = await clientAxios.get(`${ROUTES.PEOPLE}`);
+  return people.data;
+};
+
+export const getPeoplesByPage = async (page: string) => {
+  const people = await clientAxios.get(`${ROUTES.PEOPLE}?page=${page}`);
+  return people.data;
+};
+
+export const getPeoplesBySearch = async (search: string) => {
+  const people = await clientAxios.get(`${ROUTES.PEOPLE}?search=${search}`);
+  return people.data;
+};
+
+export const getPeoplesBySearchAndPage = async (search: string, page: string) => {
+  const people = await clientAxios.get(`${ROUTES.PEOPLE}?search=${search}&page=${page}`);
   return people.data;
 };
 

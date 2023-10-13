@@ -1,14 +1,49 @@
 import { Request, Response } from 'express';
+import NodeCache from 'node-cache';
 import {
-  batchCharacters, batchPlanets, batchSpecies, batchStarships, batchVehicles, getAllFilms, getFilm,
+  batchCharacters, batchPlanets, batchSpecies, batchStarships, batchVehicles, getAllFilms, getFilm, getFilmsByPage, getFilmsBySearch, getFilmsBySearchAndPage,
 } from '../services/films.services';
-import { handleAppError } from '../utils/error.utility';
+import AppError, { handleAppError } from '../utils/error.utility';
+import { CACHE_DURATION_SECONDS, ROUTES } from '../constants';
+
+const cache = new NodeCache({ stdTTL: CACHE_DURATION_SECONDS });
 
 export const getFilms = async (req: Request, res: Response) => {
   try {
-    const { search } = req.query as { search: string };
-    const films = search ? await getAllFilms(search) : await getAllFilms();
-    return res.status(200).json(films);
+    const { search, page } = req.query as { search: string, page: string };
+    if (search && page) {
+      const cacheKey = `${ROUTES.FILMS}$?search=${search}&page=${page}`;
+      const cachedData = cache.get(cacheKey) as [];
+      if (cachedData) return res.status(200).json(cachedData);
+      const films = await getFilmsBySearchAndPage(search, page);
+      cache.set(cacheKey, films);
+      return res.status(200).json(films);
+    }
+    if (search) {
+      const cacheKey = `${ROUTES.FILMS}$?search=${search}`;
+      const cachedData = cache.get(cacheKey) as [];
+      if (cachedData) return res.status(200).json(cachedData);
+      const films = await getFilmsBySearch(search);
+      cache.set(cacheKey, films);
+      return res.status(200).json(films);
+    }
+    if (page) {
+      const cacheKey = `${ROUTES.FILMS}$?page=${page}`;
+      const cachedData = cache.get(cacheKey) as [];
+      if (cachedData) return res.status(200).json(cachedData);
+      const films = await getFilmsByPage(page);
+      cache.set(cacheKey, films);
+      return res.status(200).json(films);
+    }
+    if (!search && !page) {
+      const cacheKey = `${ROUTES.FILMS}`;
+      const cachedData = cache.get(cacheKey) as [];
+      if (cachedData) return res.status(200).json(cachedData);
+      const films = await getAllFilms();
+      cache.set(cacheKey, films);
+      return res.status(200).json(films);
+    }
+    throw new AppError('Invalid route');
   } catch (error: unknown) {
     return handleAppError(res, error);
   }

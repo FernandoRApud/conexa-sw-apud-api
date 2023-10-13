@@ -12,7 +12,7 @@ module.exports = {
   overrides: [
   ],
   parser: '@typescript-eslint/parser',
-  ignorePatterns: ['node_modules/', 'build/', 'package.json', 'package-lock.json', 'tsconfig.json'],
+  ignorePatterns: ['node_modules/', 'build/', 'package.json', 'package-lock.json', 'tsconfig.json', 'coverage/', 'jest.config.js'],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
@@ -45,5 +45,7 @@ module.exports = {
     'no-use-before-define': 'off',
     'no-param-reassign': [2, { props: false }],
     '@typescript-eslint/naming-convention': 'off',
+    'no-multi-assign': [0],
+    'import/no-extraneous-dependencies': [0],
   },
 };

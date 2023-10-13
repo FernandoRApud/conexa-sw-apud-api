@@ -1,6 +1,10 @@
 import axios from 'axios';
-import { FetchedData } from '../interfaces';
+import NodeCache from 'node-cache';
+import { IFetchedDataExtended } from '../interfaces';
 import AppError from './error.utility';
+import { CACHE_DURATION_SECONDS } from '../constants';
+
+const cache = new NodeCache({ stdTTL: CACHE_DURATION_SECONDS });
 
 const defaultOptions = {
   baseURL: 'https://swapi.dev/api/',
@@ -20,14 +24,35 @@ const fetchFilmsInBatch = async (filmUrls: string[]) => {
   }
 };
 
-export const passthroughFetchBatch = async <K extends keyof FetchedData>(
-  fetchedData: FetchedData,
+export const passthroughFetchBatch = async <K extends keyof IFetchedDataExtended>(
+  fetchedData: IFetchedDataExtended,
   subIndex: K,
 ) => {
+  const cacheKey = `${subIndex}:${fetchedData[subIndex]}`;
+
+  const cachedData = cache.get(cacheKey) as [];
+  if (cachedData) {
+    const newAssignedData = fetchedData[subIndex] = cachedData;
+    return newAssignedData;
+  }
+
   const propertyValue = fetchedData[subIndex];
 
   if (Array.isArray(propertyValue)) {
     const filmsData = await fetchFilmsInBatch(propertyValue);
-    console.log(filmsData);
-  } else throw new AppError('Wrong data type');
+    const newAssignedData = fetchedData[subIndex] = filmsData;
+
+    cache.set(cacheKey, newAssignedData);
+
+    return newAssignedData;
+  }
+  if (typeof propertyValue === 'string') {
+    const response = await axios.get(propertyValue);
+    const newAssignedData = fetchedData[subIndex] = response.data;
+
+    cache.set(cacheKey, newAssignedData);
+
+    return newAssignedData;
+  }
+  throw new AppError('Wrong data type');
 };

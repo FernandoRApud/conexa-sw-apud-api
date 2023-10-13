@@ -1,4 +1,3 @@
-const DB_MONGO = process.env.DB_MONGO ?? '';
 const PORT = process.env.PORT ?? 4000;
 const ROUTES = {
   PLANETS: 'planets/',
@@ -18,10 +17,9 @@ const CHARACTERS_INDEX = 'characters';
 const RESIDENTS_INDEX = 'residents';
 const PEOPLE_INDEX = 'people';
 const PILOTS_INDEX = 'pilots';
-const CACHE_DURATION_SECONDS = 60 * 30;
+const CACHE_DURATION_SECONDS = Number(process.env.CACHE_DURATION_SECONDS ?? 60 * 30);
 
 export {
-  DB_MONGO,
   PORT,
   ROUTES,
   HOMEWORLD_INDEX,
